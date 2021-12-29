@@ -35,7 +35,7 @@ module.exports = {
 				link: "/studySituation/vue/",
 			},
 		],
-		repo: "FBI-Conan/LearningSourceOfVue",
+		repo: "FBI-Conan/blog",
 		sidebar: {
 			"/guide": [
 				{
@@ -59,7 +59,8 @@ module.exports = {
 						"/studySituation/vue/directory.md",
 						"/studySituation/vue/lifeCycle.md",
 						"/studySituation/vue/compositionAPI.md",
-						"/studySituation/vue/plugin.md"
+						"/studySituation/vue/plugin.md",
+						"/studySituation/vue/coreReactivity.md",
 					],
 				},
 			],
