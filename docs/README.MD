@@ -6,7 +6,7 @@ tagline: "FBIConan的个人博客" #默认使用.vuepress/config.js中的descrip
 heroImage: /assets/img/blog.svg
 actions:
   - text: 快速阅览
-    link: /guide/diary/
+    link: /studySituation/vue/
     type: primary
   - text: 作者简介
     link: /author
@@ -24,6 +24,7 @@ features:
     details: 追求新的技术，虽然缓慢，方向不变。
   - title: 🆙
     details: 乐观！积极！向上！健康生活!
-footer: 我看青山多妩媚 | 料青山看我应如是
+footer: 我看青山多妩媚 | 料青山看我应如是<br /><a href="https://beian.miit.gov.cn" target="_blank">赣ICP备2022000226号-1</a>
+footerHtml: true
 ---
 <!-- ![hero](./assets/img/headphoto.png) -->

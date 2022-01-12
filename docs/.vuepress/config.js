@@ -77,4 +77,5 @@ module.exports = {
 		sidebarDepth: 2,
 		editLink: false,
 	},
+	plugins: [["@vuepress/plugin-search"]],
 };
