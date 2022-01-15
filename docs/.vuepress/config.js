@@ -28,6 +28,10 @@ module.exports = {
 						text: "TypeScript",
 						link: "/studySituation/ts/",
 					},
+					{
+						text: "JavaScript",
+						link: "/studySituation/js/",
+					},
 				],
 			},
 			{
@@ -38,10 +42,6 @@ module.exports = {
 		repo: "FBI-Conan/blog",
 		sidebar: {
 			"/guide": [
-				{
-					text: "首页",
-					link: "/",
-				},
 				{
 					text: "日记",
 					link: "/guide/diary/",
@@ -72,6 +72,10 @@ module.exports = {
 				"/studySituation/ts/interface.md",
 				"/studySituation/ts/generics.md",
 				"/studySituation/ts/expect.md",
+			],
+			"/studySituation/js": [
+				"/studySituation/js/",
+				"/studySituation/js/handwritten.md",
 			],
 		},
 		sidebarDepth: 2,
