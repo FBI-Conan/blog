@@ -38,6 +38,10 @@ module.exports = {
 				text: "vue的学习",
 				link: "/studySituation/vue/",
 			},
+			{
+				text: "小游戏",
+				link: "http://game.fbiconan.xyz",
+			},
 		],
 		repo: "FBI-Conan/blog",
 		sidebar: {
@@ -61,6 +65,7 @@ module.exports = {
 						"/studySituation/vue/compositionAPI.md",
 						"/studySituation/vue/plugin.md",
 						"/studySituation/vue/coreReactivity.md",
+						"/studySituation/vue/coreVdom.md",
 					],
 				},
 			],

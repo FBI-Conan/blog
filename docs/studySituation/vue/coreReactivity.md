@@ -72,6 +72,10 @@ const product = {
 	quality: 2,
 };
 let total = product.price * product.quality;
+/**
+	1. WeakMap 只能使用对象作为键
+	2. 当作为键的对象本身不再可以从任何代码访问，即该目标可以被垃圾回收时，它在 WeakMap 中关联的值也会被回收
+ */
 const targetsMap = new WeakMap<object, KeyToDepMap>();
 
 const track = (target: object, key: string) => {
