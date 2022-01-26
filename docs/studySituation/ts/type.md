@@ -226,3 +226,12 @@ enum Gender3 {
 console.log(Gender3);
 // {1: 'man', 3: 'unknown', man: 1, woman: 'WOMAN', unknown: 3}
 ```
+
+## 联合类型(union types)
+
+typescript 允许使用各种运算符从现有的类型中构建新的类型。联合类型是由两个或多个其他类型组成的类型。
+
+```ts
+// 表示 Id 类型的值可是能 number 和 string 中的任意一个
+type Id = number | string; // type 是类型别名的语法，表示 联合类型 number | string 的名称是 Id
+```

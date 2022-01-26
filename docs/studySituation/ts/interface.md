@@ -45,6 +45,48 @@ fcn(v);
 fcn({ name: "conan", age: 1 }); // 报错（对象字面量会被特殊对待）：“age”不在类型“myInterface”中。
 ```
 
+## 接口和类型别名
+
+`interface`（接口） 和 `type`（类型别名） 十分相似，大多数情况下，可以在两者之间自由选择。不同如下：
+
+```ts
+/*
+	1. ts 4.2 版本之前，错误提示的时候，有时不会显示类型别名的名称，
+		只显示类型别名的结果，而接口则在错误提示的时候总是显示名称（提示问题，不必太在意）
+*/
+
+/*
+	2. 同一名称的接口可以声明多次，结果会合并
+		同一名称的类型别名只能声明一次
+*/
+interface Person {
+	name: string;
+}
+interface Person { // <==> { name:string, age?:number }
+	age?: number;
+}
+
+type Student {
+	name: string
+}
+// 报错： 标识符“Student”重复。
+type Student { 
+	score?: number
+}
+
+/*
+	3. 接口仅可以声明对象的结构，不能重命名基本类型（string, number, boolean）
+*/
+
+// 报错： 接口只能扩展具有可选类型参数的标识符/限定名称。
+interface MyInter extends number { 
+
+}
+
+type MyType = string; // 可行
+
+```
+
 ## 函数类型
 
 接口除了可以描述带有属性的普通对象外，还能够描述函数类型。
