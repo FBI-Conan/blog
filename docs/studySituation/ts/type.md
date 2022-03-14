@@ -227,11 +227,73 @@ console.log(Gender3);
 // {1: 'man', 3: 'unknown', man: 1, woman: 'WOMAN', unknown: 3}
 ```
 
-## 联合类型(union types)
+## union types
 
-typescript 允许使用各种运算符从现有的类型中构建新的类型。联合类型是由两个或多个其他类型组成的类型。
+联合类型。typescript 允许使用各种运算符从现有的类型中构建新的类型。联合类型是由两个或多个其他类型组成的类型。
 
 ```ts
 // 表示 Id 类型的值可是能 number 和 string 中的任意一个
 type Id = number | string; // type 是类型别名的语法，表示 联合类型 number | string 的名称是 Id
+```
+
+## Literal types
+
+字面量类型。除普通类型`string number`外，支持在设置类型的位置上指定特定的字符串和数字，示例如下：
+
+```ts
+// let 和 var 声明的变量可变，ts 就会将变量描述为值对应的普通类型
+let changingString = "hello"; // let changingString: string
+
+// const 声明的变量不可变，ts 则会将变量值描述为对应的字面量类型
+const constantString = "world"; // const constantString: "world"
+```
+
+只有一个值的字面量类型用处不大，常见方式是将多个字面量联合为联合类型，表达为一个更有用的概念。
+
+```ts
+const handleRequest = (url: string, methodType: "GET" | "POST") => {
+	fetch(url, {
+		method: methodType,
+	})
+		.then(response => response.json())
+		.then(data => {
+			//...
+		});
+};
+```
+
+> 字面量推断
+
+当在对象中初始化一个变量的时候，ts 会假设属性值是可变的。
+
+```ts
+const request = {
+	url: "http://127.0.0.1:8080/id",
+	method: "GET",
+}; // const request = { url: string, method: string }
+```
+
+因此，下面的代码就会报错：
+
+```ts
+// 报错：类型“string”的参数不能赋给类型“"GET" | "POST"”的参数
+handleRequest(request.url, request.method);
+```
+
+解决方法是使用类型断言：
+
+```ts
+const request = {
+	url: "http://127.0.0.1:8080/id",
+	method: "GET" as "GET",
+};
+
+// or
+handleRequest(request.url, request.method as "GET");
+
+// or 使用【as const】将整个对象转换为字面量类型
+const request = {
+	url: "http://127.0.0.1:8080/id",
+	method: "GET",
+} as const;
 ```

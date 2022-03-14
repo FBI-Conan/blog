@@ -11,15 +11,8 @@ module.exports = {
 		logoDark: "/assets/img/headphoto.png", // 夜间模式下使用的logo
 		navbar: [
 			{
-				text: "生涯",
-				children: [
-					{ text: "回首", link: "/guide/eassays/" },
-					{ text: "眺望", link: "/guide/diary/" },
-				],
-			},
-			{
-				text: "日记",
-				link: "/guide/diary/",
+				text: "目录",
+				link: "/guide/catlog",
 			},
 			{
 				text: "语言",
@@ -35,8 +28,12 @@ module.exports = {
 				],
 			},
 			{
-				text: "vue的学习",
-				link: "/studySituation/vue/",
+				text: "前端框架",
+				children: [{ text: "Vue", link: "/studySituation/vue/" }],
+			},
+			{
+				text: "工具",
+				children: [{ text: "测试", link: "/studySituation/codeTest/" }],
 			},
 			{
 				text: "小游戏",
@@ -45,16 +42,7 @@ module.exports = {
 		],
 		repo: "FBI-Conan/blog",
 		sidebar: {
-			"/guide": [
-				{
-					text: "日记",
-					link: "/guide/diary/",
-				},
-				{
-					text: "前端",
-					link: "/guide/eassays/",
-				},
-			],
+			"/guide": ["/guide/catlog/README.md", "/guide/plan/README.md"],
 			"/studySituation/vue": [
 				{
 					text: "Vue",
@@ -81,6 +69,16 @@ module.exports = {
 			"/studySituation/js": [
 				"/studySituation/js/",
 				"/studySituation/js/handwritten.md",
+			],
+			"/studySituation/codeTest": [
+				"/studySituation/codeTest",
+				{
+					text: "Jest",
+					children: [
+						"/studySituation/codeTest/jest/firstLook.md",
+						"/studySituation/codeTest/jest/componentTest.md",
+					],
+				},
 			],
 		},
 		sidebarDepth: 2,

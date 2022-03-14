@@ -5,8 +5,8 @@ heroText: "学习笔记" #默认使用.vuepress/config.js中的title
 tagline: "FBIConan的个人博客" #默认使用.vuepress/config.js中的description
 heroImage: /assets/img/blog.svg
 actions:
-  - text: 快速阅览
-    link: /studySituation/vue/
+  - text: 开始
+    link: /guide/catlog
     type: primary
   - text: 作者简介
     link: /author
