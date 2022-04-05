@@ -4,7 +4,9 @@ module.exports = {
 	port: "7777",
 	host: "localhost",
 	markdown: {
-		lineNumbers: true,
+		code: {
+			lineNumbers: true,
+		}
 	},
 	themeConfig: {
 		logo: "/assets/img/headphoto.png",
@@ -30,6 +32,12 @@ module.exports = {
 			{
 				text: "前端框架",
 				children: [{ text: "Vue", link: "/studySituation/vue/" }],
+			},
+			{
+				text: "后端",
+				children: [
+					{ text: "Node.js", link: "/studySituation/backEnd/nodejs/" },
+				],
 			},
 			{
 				text: "工具",
@@ -71,7 +79,7 @@ module.exports = {
 				"/studySituation/js/handwritten.md",
 			],
 			"/studySituation/codeTest": [
-				"/studySituation/codeTest",
+				"/studySituation/codeTest/",
 				{
 					text: "Jest",
 					children: [
@@ -79,6 +87,13 @@ module.exports = {
 						"/studySituation/codeTest/jest/componentTest.md",
 					],
 				},
+			],
+			"/studySituation/backEnd/nodejs": [
+				"/studySituation/backEnd/nodejs/",
+				"/studySituation/backEnd/nodejs/fs.md",
+				"/studySituation/backEnd/nodejs/path.md",
+				"/studySituation/backEnd/nodejs/http.md",
+				"/studySituation/backEnd/nodejs/modularization.md",
 			],
 		},
 		sidebarDepth: 2,
