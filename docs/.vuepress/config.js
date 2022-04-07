@@ -94,6 +94,7 @@ module.exports = {
 				"/studySituation/backEnd/nodejs/path.md",
 				"/studySituation/backEnd/nodejs/http.md",
 				"/studySituation/backEnd/nodejs/modularization.md",
+				"/studySituation/backEnd/nodejs/express.md",
 			],
 		},
 		sidebarDepth: 2,
