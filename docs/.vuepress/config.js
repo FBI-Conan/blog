@@ -6,7 +6,7 @@ module.exports = {
 	markdown: {
 		code: {
 			lineNumbers: true,
-		}
+		},
 	},
 	themeConfig: {
 		logo: "/assets/img/headphoto.png",
@@ -37,6 +37,8 @@ module.exports = {
 				text: "后端",
 				children: [
 					{ text: "Node.js", link: "/studySituation/backEnd/nodejs/" },
+					{ text: "MySQL", link: "/studySituation/backEnd/mySQL/" },
+					{ text: "认证", link: "/studySituation/backEnd/authentication/" },
 				],
 			},
 			{
@@ -52,18 +54,13 @@ module.exports = {
 		sidebar: {
 			"/guide": ["/guide/catlog/README.md", "/guide/plan/README.md"],
 			"/studySituation/vue": [
-				{
-					text: "Vue",
-					children: [
-						"/studySituation/vue/",
-						"/studySituation/vue/directory.md",
-						"/studySituation/vue/lifeCycle.md",
-						"/studySituation/vue/compositionAPI.md",
-						"/studySituation/vue/plugin.md",
-						"/studySituation/vue/coreReactivity.md",
-						"/studySituation/vue/coreVdom.md",
-					],
-				},
+				"/studySituation/vue/",
+				"/studySituation/vue/directory.md",
+				"/studySituation/vue/lifeCycle.md",
+				"/studySituation/vue/compositionAPI.md",
+				"/studySituation/vue/plugin.md",
+				"/studySituation/vue/coreReactivity.md",
+				"/studySituation/vue/coreVdom.md",
 			],
 			"/studySituation/ts": [
 				"/studySituation/ts/README.md",
@@ -95,6 +92,20 @@ module.exports = {
 				"/studySituation/backEnd/nodejs/http.md",
 				"/studySituation/backEnd/nodejs/modularization.md",
 				"/studySituation/backEnd/nodejs/express.md",
+				"/studySituation/backEnd/nodejs/expressSession.md",
+				"/studySituation/backEnd/nodejs/jsonwebtoken.md",
+				"/studySituation/backEnd/nodejs/expressJwt.md",
+			],
+			"/studySituation/backEnd/mySQL": [
+				"/studySituation/backEnd/mySQL/",
+				"/studySituation/backEnd/mySQL/sql.md",
+				"/studySituation/backEnd/mySQL/mysqlModule.md",
+			],
+			"/studySituation/backEnd/authentication": [
+				"/studySituation/backEnd/authentication/",
+				"/studySituation/backEnd/authentication/cookie.md",
+				"/studySituation/backEnd/authentication/session.md",
+				"/studySituation/backEnd/authentication/token.md",
 			],
 		},
 		sidebarDepth: 2,
