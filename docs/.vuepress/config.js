@@ -30,8 +30,14 @@ module.exports = {
 				],
 			},
 			{
-				text: "前端框架",
-				children: [{ text: "Vue", link: "/studySituation/vue/" }],
+				text: "前端",
+				children: [
+					{ text: "Vue", link: "/studySituation/vue/" },
+					{
+						text: "微前端",
+						link: "/studySituation/microFrontends/",
+					},
+				],
 			},
 			{
 				text: "后端",
@@ -106,6 +112,11 @@ module.exports = {
 				"/studySituation/backEnd/authentication/cookie.md",
 				"/studySituation/backEnd/authentication/session.md",
 				"/studySituation/backEnd/authentication/token.md",
+			],
+			"/studySituation/microFrontends": [
+				"/studySituation/microFrontends/",
+				"/studySituation/microFrontends/singleSpa.md",
+				"/studySituation/microFrontends/qiankun.md",
 			],
 		},
 		sidebarDepth: 2,
