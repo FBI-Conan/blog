@@ -205,4 +205,173 @@ module.exports = {
 
 ## 源码
 
-努力学习中，敬请期待...
+[参考资料](https://segmentfault.com/a/1190000041336746)
+
+single-spa 可以总结为是一个微应用的状态管理框架，其学习的思维导图如下：
+
+<a href="/assets/img/singleSpaSourceCode.svg" target='_blank'>![single-spa源码思维导图](/assets/img/singleSpaSourceCode.svg)</a>
+
+### mini-single-spa
+
+```js
+// 保存注册应用信息
+const apps = [];
+
+// 声明状态（部分） app.status
+export const NOT_LOADED = "NOT_LOADED";
+export const LOADING_SOURCE_CODE = "LOADING_SOURCE_CODE";
+export const NOT_BOOTSTRAPPED = "NOT_BOOTSTRAPPED";
+export const BOOTSTRAPPING = "BOOTSTRAPPING";
+export const NOT_MOUNTED = "NOT_MOUNTED";
+export const MOUNTING = "MOUNTING";
+export const MOUNTED = "MOUNTED";
+export const UNMOUNTING = "UNMOUNTING";
+
+const registerApplication = appObj => {
+	// appObj 只允许如下形式
+	// {
+	//   appName,  name
+	//   loadApp,  app
+	//   activeWhen, activeWhen
+	//   customProps, customProps
+	// }
+	const registration = {
+		appName: appObj.name,
+		loadApp: appObj.app,
+		activeWhen: appObj.activeWhen,
+		customProps: appObj.customProps,
+	};
+	// 跳过校验
+
+	// 跳过 appName 查重
+
+	apps.push({
+		...registration,
+		status: NOT_LOADED,
+	});
+
+	reroute();
+};
+
+// 管理app状态，触发生命周期函数
+const reroute = () => {
+	// 将 app 归为 3 类
+	// toload
+	// tomount
+	// tounmount
+	// tounload 这类先不考虑
+	const { appsToLoad, appsToMount, appsToUnmount } = getAppChanges();
+
+	if (started) {
+		// 已经调用
+		performAppChanges();
+
+		function performAppChanges() {
+			// 执行卸载操作
+			const unmountPromise = appsToUnmount.map(async app => {
+				app.status = UNMOUNTING;
+				await app.unmount({ ...app.customProps });
+				app.status = NOT_MOUNTED;
+			});
+
+			// 执行导入操作
+			const loadPromise = appsToLoad.map(async app => {
+				app.status = LOADING_SOURCE_CODE;
+				const lifeCycles = await app.loadApp({ ...app.customProps });
+				app.bootstrap = lifeCycles.bootstrap;
+				app.mount = lifeCycles.mount;
+				app.unmount = lifeCycles.unmount;
+				app.status = NOT_BOOTSTRAPPED;
+			});
+
+			Promise.all(unmountPromise.concat(loadPromise)).then(() => {
+				// 执行加载操作
+				appsToLoad.concat(appsToMount).forEach(async app => {
+					const appShouldBeActive = shouldBeActive(app);
+					if (appShouldBeActive) {
+						app.status = MOUNTING;
+						await app.mount({ ...app.customProps });
+						app.status = MOUNTED;
+					}
+				});
+			});
+		}
+	} else {
+		// 未调用 start 方法，只需要处理 appsToLoad，暂不考虑
+	}
+};
+
+// 启动
+let started = false; // 标记是否调用过 start 函数
+const start = () => {
+	started = true;
+	reroute();
+};
+
+// 将 app 分为 3 类
+const getAppChanges = () => {
+	return apps.reduce(
+		(res, app) => {
+			const appShouldBeActive = shouldBeActive(app);
+			switch (app.status) {
+				case NOT_LOADED:
+				case LOADING_SOURCE_CODE:
+					res.appsToLoad.push(app);
+					break;
+				case NOT_BOOTSTRAPPED:
+				case NOT_MOUNTED:
+					if (appShouldBeActive) {
+						res.appsToMount.push(app);
+					}
+					break;
+				case MOUNTED:
+					if (!appShouldBeActive) {
+						res.appsToUnmount.push(app);
+					}
+					break;
+			}
+			return res;
+		},
+		{
+			appsToLoad: [],
+			appsToMount: [],
+			appsToUnmount: [],
+		}
+	);
+};
+
+// 校验 app 是否该激活
+const shouldBeActive = app => app.activeWhen(window.location);
+
+// 监听 hashchange
+window.addEventListener("hashchange", urlReroute);
+
+const urlReroute = () => {
+	reroute();
+};
+
+window.history.pushState = patchedUpdateState(window.history.pushState);
+window.history.replaceState = patchedUpdateState(window.history.replaceState);
+
+// 重写 pushState replaceState 方法，以便在调用时执行 reroute 方法
+function patchedUpdateState(updateState) {
+	return function () {
+		const urlBefore = window.location.href;
+		const res = updateState.apply(this, arguments);
+		const urlAfter = window.location.href;
+		if (urlBefore !== urlAfter) {
+			// 路径不同，需要 reroute
+			reroute();
+		}
+		return res;
+	};
+}
+
+// 可以通过 singleSpaNavigate 判断微应用的运行环境
+window.singleSpaNavigate = () => {};
+
+export default {
+	registerApplication,
+	start,
+};
+```
