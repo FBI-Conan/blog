@@ -75,6 +75,9 @@ module.exports = {
 				"/studySituation/ts/clazz.md",
 				"/studySituation/ts/interface.md",
 				"/studySituation/ts/generics.md",
+				"/studySituation/ts/function.md",
+				"/studySituation/ts/object.md",
+				"/studySituation/ts/createTypeByType.md",
 				"/studySituation/ts/expect.md",
 			],
 			"/studySituation/js": [

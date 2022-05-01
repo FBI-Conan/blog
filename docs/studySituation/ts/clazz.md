@@ -75,11 +75,71 @@ class Person {
 
 console.log(new Person("conan", 25)); // Person {name: 'conan', age: 25}
 console.log(new Person("heiji", 24)); // Person {name: 'heiji', age: 24}
+
+// 初始化必须在构造函数本身中
+class Position {
+	x: number;
+	y: number; // y 会被标红：属性“y”没有初始化表达式，且未在构造函数中明确赋值
+
+	constructor() {
+		this.x = 123;
+		// 非构造函数自身初始化的值是不会被 TS 检测的，因为函数 changeY 可能会被子类改写
+		this.changeY();
+	}
+
+	changeY() {
+		this.y = 0;
+	}
+}
+```
+
+### implements
+
+可以使用 `implements` 子句检查类是否满足某个特定的接口：
+
+```ts
+interface Pingable {
+	ping(): void;
+}
+class Sonar implements Pingable {
+	ping() {
+		console.log("ping!");
+	}
+}
+// Ball 标红：类型 "Ball" 中缺少属性 "ping"，但类型 "Pingable" 中需要该属性。
+class Ball implements Pingable {
+	pong() {
+		console.log("pong!");
+	}
+}
+```
+
+<font color=red>但是 `implements` 子句只是一种检查，即该类可以被视为接口类型。它根本不会更改类的类型或其方法。</font>
+
+```ts
+interface Checkable {
+	check(name: string): void;
+}
+
+class NameChecker implements Checkable {
+	// s 标红： Parameter 's' implicitly has an 'any' type.
+	// 提示 s 具有隐式 any 类型，并没有将 Checkable["check"] 的参数类型给 s
+	check(s) {
+		// Notice no error here
+		return s.toLowercse() === "ok";
+	}
+}
+
+const obj: Checkable = {
+	// 而对于对象，接口则会推断 check 方法的参数类型
+	// (parameter) name: string
+	check(name) {},
+};
 ```
 
 ### 继承
 
-继承可以使得子类具有父类别的各种属性和方法，而不需要再次编写相同的代码。
+继承可以使得子类具有父类别的各种属性和方法，而不需要再次编写相同的代码（静态成员也会继承）。
 
 ```ts
 /**
@@ -119,12 +179,38 @@ class Chef extends Person {
 class Driver extends Person {
 	constructor(name: string, age: number, public mileage: number) {
 		super(name, age); // super 指代父类
-		this.mileage = mileage;
 	}
 	drive() {
 		console.log("我正在开车~~");
 	}
 }
+```
+
+js 中定义了类的初始化顺序：
+
+- 初始化基类字段
+- 基类构造函数运行
+- 初始化派生类字段
+- 派生类构造函数运行
+
+```ts
+class Base {
+	name = "base";
+	constructor() {
+		console.log("My name is " + this.name);
+	}
+}
+
+class Derived extends Base {
+	name = "derived";
+	constructor() {
+		console.log("-----"); // -----
+		super(); // My name is base，因为 此时派生类字段未初始化？所以返回的是 base？（有点糊涂）
+		console.log(this.name); // derived
+	}
+}
+
+const d = new Derived(); // 输出顺序 ----- | My name is base | derived
 ```
 
 ### 抽象类
@@ -160,4 +246,172 @@ const add = new Add();
 
 console.log(add.icon); // +
 console.log(add.operate(1, 1)); // 2
+```
+
+### this 在类中运行时
+
+有一点很重要，TypeScript 不会改变 JavaScript 运行时的行为
+
+- **this 参数**
+
+在方法或函数定义中，名为 this 的初始参数在 TypeScript 中具有特殊含义。这些参数在编译过程中将被擦除：
+
+```ts
+// TypeScript input with 'this' parameter
+function fn(this: SomeType, x: number) {
+	/* ... */
+}
+
+// JavaScript output
+function fn(x) {
+	/* ... */
+}
+```
+
+TypeScript 检查调用函数/方法时的上下文是否正确。可以将 this 参数添加到方法定义中，以**静态强制**正确的调用该方法：
+
+```ts
+class MyClass {
+	name = "MyClass";
+	getName(this: MyClass) {
+		return this.name;
+	}
+}
+const c = new MyClass();
+// OK
+c.getName();
+
+// Error, would crash
+const g = c.getName;
+// 此时执行 g()，this 一般会是 window 对象，而非 MyClass 类型，因此 g() 会标红
+console.log(g()); // 类型为“void”的 "this" 上下文不能分配给类型为“MyClass”的方法的 "this"。
+```
+
+- **this 类型**
+
+可以在参数类型位置使用 this，*动态*地引用当前类的类型。
+
+```ts
+class Box {
+	content: string = "";
+	// other 的类型为动态的
+	sameAs(other: this) {
+		return other.content === this.content;
+	}
+}
+
+class DerivedBox extends Box {
+	otherContent: string = "?";
+}
+
+const base = new Box();
+const derived = new DerivedBox();
+
+// base 处标红
+// derived调用的 sameAs 方法，此时 this 为 DerivedBox
+// 而 base 的类型为 Box
+derived.sameAs(base);
+```
+
+- **this-基于类型保护**
+
+可以在类和接口中的方法返回类型位置处使用`this is Type`。当搭配类型收缩（如：`if` 语句）时，目标对象的类型将缩小到指定的 `Type`。
+
+```ts
+class FileSystemObject {
+	// 返回结果为真时，this 的类型就是 FileRep
+	isFile(): this is FileRep {
+		return this instanceof FileRep;
+	}
+	isDirectory(): this is Directory {
+		return this instanceof Directory;
+	}
+	isNetworked(): this is Networked & this {
+		return this.networked;
+	}
+	constructor(public path: string, private networked: boolean) {}
+}
+
+class FileRep extends FileSystemObject {
+	constructor(path: string, public content: string) {
+		super(path, false);
+	}
+}
+
+class Directory extends FileSystemObject {
+	children!: FileSystemObject[];
+}
+
+interface Networked {
+	host: string;
+}
+
+const fso: FileSystemObject = new FileRep("foo/bar.txt", "foo");
+
+if (fso.isFile()) {
+	fso.content; // const fso: FileRep
+} else if (fso.isDirectory()) {
+	fso.children; // const fso: Directory
+} else if (fso.isNetworked()) {
+	fso.host; // const fso: Networked & FileSystemObject
+}
+```
+
+### 类表达式
+
+类表达式和常用的类声明非常相似，唯一的不同是类表达式不需要在 class 后面写类名，不过可以通过最终绑定到的标识符引用它们。
+
+```ts
+const someClass = class<Type> {
+	content: Type;
+	constructor(value: Type) {
+		this.content = value;
+	}
+};
+const m = new someClass("Hello, world"); // const m: someClass<string>
+```
+
+### 类之间的关系
+
+在大多数情况下，TypeScript 中的类在结构上进行比较，与其他类型的类相同（结构类型/鸭子类型）。
+
+```ts
+class Point1 {
+	x = 0;
+	y = 0;
+}
+class Point2 {
+	x = 0;
+	y = 0;
+}
+// OK
+const p: Point1 = new Point2();
+
+class Person {
+	name: string;
+	age: number;
+}
+class Employee {
+	name: string;
+	age: number;
+	salary: number;
+}
+// OK
+const p: Person = new Employee();
+```
+
+空类没有成员。在结构类型系统中，没有成员的类型通常是其他任何类型的超类型：
+
+```ts
+class Empty {}
+
+function fn(x: Empty) {
+	// can't do anything with 'x', so I won't
+}
+
+// All OK!
+fn(window);
+fn({});
+fn(fn);
+fn("");
 ```

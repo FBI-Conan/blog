@@ -62,7 +62,7 @@ let myIdentity2: GeneriscIdentityFn = identity;
 
 ## 泛型类
 
-泛型类看上去与泛型接口差不多，使用<>括起泛型变量，跟在类名后面
+泛型类看上去与泛型接口差不多，使用<>括起类型变量，跟在类名后面。**泛型类中的类型变量只针对类的实例，因此静态成员(static)不饿能使用类型变量**。
 
 ```ts
 class GeneticsVarType<T> {
@@ -95,4 +95,48 @@ function loggingIdentity<T extends LengthWise>(arg: T) {
 }
 
 loggingIdentity({ name: "desk", length: 1.5 });
+```
+
+### 在泛型约束中使用类型参数
+
+声明受另一个类型参数约束的类型参数。
+
+```ts
+/**
+ * 从一个对象中获取其已经存在的属性的值，避免意外获取不存在的属性
+ * @param obj 对象
+ * @param key 对象上已存在属性
+ */
+function getProperty<Type, Key extends keyof Type>(obj: Type, key: Key) {
+	return obj[key];
+}
+
+let x = { a: 1, b: 2, c: 3, d: 4 };
+
+getProperty(x, "a");
+// getProperty(x, "m"); // 报错：对象 x 上不存在属性 m
+```
+
+### 在泛型中使用类类型
+
+```ts
+/**
+ * 创建类实例
+ * @param clazz 类
+ * @param params 实例化类需要传入的参数所组成的数组
+ */
+function create<T, K extends Array<unknown>>(
+	clazz: { new (...arr: K): T },
+	...params: K
+): T {
+	return new clazz(...params);
+}
+
+class MyClass {
+	constructor(public name: string, public age: number) {}
+}
+
+const obj = create(MyClass, "conan", 17);
+
+console.log(obj); // MyClass { name: 'conan', age: 17 }
 ```

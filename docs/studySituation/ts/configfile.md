@@ -82,7 +82,20 @@
 		"noImplicitThis": true,
 
 		// 严格执行空值检查 对于可能为空值的类型就行检查提示
-		"strictNullChecks": true
+		"strictNullChecks": true,
+
+		// 是否需要在构造函数中初始化类字段
+		"strictPropertyInitialization": true,
+
+		// 是否生成 .d.ts 声明文件
+		"declaration": true,
+		// 是否只生成 .d.ts 声明文件，不生成 .js 文件
+		"emitDeclarationOnly": true,
+		// 是否启用所有文件都是模块的设置，确保 Babel 可以在 ts 项目中安装的转译文件
+  	"isolatedModules": true,
+
+		// .d.ts 文件中使用export default需要 esModuleInterop: true 才能正常工作
+		"esModuleInterop": true
 	}
 }
 ```

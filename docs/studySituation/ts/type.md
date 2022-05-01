@@ -126,7 +126,7 @@ let a: string & number; // let a: never
 
 ## object
 
-任意的`JavaScript`对象类型（直接使用意义不大）
+任意的`JavaScript`对象类型（直接使用意义不大），表示任何不是基本类型（string、number、bigint、boolean、symbol、null 或undefined）的值
 
 ```ts
 let obj: object;
