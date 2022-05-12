@@ -37,6 +37,10 @@ module.exports = {
 						text: "微前端",
 						link: "/studySituation/microFrontends/",
 					},
+					{
+						text: "web开发技术",
+						link: "/studySituation/webDevelopTech/webComponent/",
+					},
 				],
 			},
 			{
@@ -78,6 +82,7 @@ module.exports = {
 				"/studySituation/ts/function.md",
 				"/studySituation/ts/object.md",
 				"/studySituation/ts/createTypeByType.md",
+				"/studySituation/ts/utilityType.md",
 				"/studySituation/ts/expect.md",
 			],
 			"/studySituation/js": [
@@ -120,6 +125,24 @@ module.exports = {
 				"/studySituation/microFrontends/",
 				"/studySituation/microFrontends/singleSpa.md",
 				"/studySituation/microFrontends/qiankun.md",
+			],
+			"/studySituation/webDevelopTech": [
+				{
+					text: "web component",
+					children: [
+						"/studySituation/webDevelopTech/webComponent/",
+						"/studySituation/webDevelopTech/webComponent/customElements.md",
+						"/studySituation/webDevelopTech/webComponent/shadowDom.md",
+						"/studySituation/webDevelopTech/webComponent/htmlTemplate.md",
+					],
+				},
+				{
+					text: "canvas",
+					children: [
+						"/studySituation/webDevelopTech/canvas/",
+						"/studySituation/webDevelopTech/canvas/example.md",
+					],
+				},
 			],
 		},
 		sidebarDepth: 2,
