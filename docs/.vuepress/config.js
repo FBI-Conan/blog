@@ -143,6 +143,12 @@ module.exports = {
 						"/studySituation/webDevelopTech/canvas/example.md",
 					],
 				},
+				{
+					text: "web Api",
+					children: [
+						"/studySituation/webDevelopTech/webApi/"
+					]
+				}
 			],
 		},
 		sidebarDepth: 2,

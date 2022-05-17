@@ -1,6 +1,10 @@
 # qiankun
 
-qiankun 是一个基于 single-spa 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统
+qiankun 是一个基于 single-spa 的微前端实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。**亮点如下**：
+
+- css 样式隔离
+- js 沙箱
+- html-entry
 
 示例项目：主应用（Vue3）+ 微应用（Vue3）
 
@@ -162,9 +166,157 @@ module.exports = {
 };
 ```
 
+## 源码
+
+**思维导图**
+
+<a href="/assets/img/qiankunSourceCode.svg" target='_blank'>![qiankun源码思维导图](/assets/img/qiankunSourceCode.svg)</a>
+
+js 沙箱实现：
+
+```js
+function iter(obj, callback) {
+	for (const prop in obj) {
+		if (Object.hasOwnProperty.call(obj, prop)) {
+			const val = obj[prop];
+			callback(val, prop);
+		}
+	}
+}
+
+// 不支持 Proxy
+class SnapshotSandbox {
+	windowSnapshot = {};
+	modifyPropsMap = {};
+
+	active() {
+		this.windowSnapshot = {};
+		iter(window, (value, prop) => {
+			this.windowSnapshot[prop] = value;
+		});
+
+		// 恢复之前的变更
+		iter(this.modifyPropsMap, (prop, value) => {
+			window[prop] = value;
+		});
+	}
+
+	inactive() {
+		this.modifyPropsMap = {};
+		iter(window, (value, prop) => {
+			// 获取刚激活时 window 快照中得属性值
+			const preValue = this.windowSnapshot[prop];
+			if (value !== preValue) {
+				// 记录变更的值
+				this.modifyPropsMap[prop] = value;
+				// 恢复window值
+				window[prop] = preValue;
+			}
+		});
+	}
+}
+
+// 松散模式
+class LegacySandbox {
+	constructor() {
+		this.addedPropsSetInSandbox = new Set();
+		this.modifiedPropsOriginalValueMapInSandbox = new Map();
+		this.currentUpdatedPropsValueMap = new Map();
+		this.sandboxRunning = true;
+
+		this.proxy = new Proxy(
+			{},
+			{
+				get: (target, p) => {
+					return window[p];
+				},
+				set: (target, p, value) => {
+					const originalVal = window[p];
+					if (!window.hasOwnProperty(p)) {
+						// 新增
+						this.addedPropsSetInSandbox.add(p);
+					} else if (
+						!this.addedPropsSetInSandbox.has(p) &&
+						!this.modifiedPropsOriginalValueMapInSandbox.has(p)
+					) {
+						// 源码中没有 !this.addedPropsSetInSandbox.has("p")，这就说明会可能有在沙箱期间新增的属性也加进去了
+						// 如果那样的话就得在失活的时候先处理修改的属性，再处理添加的属性
+						this.modifiedPropsOriginalValueMapInSandbox.set(p, originalVal);
+					}
+					this.currentUpdatedPropsValueMap.set(p, value);
+
+					window[p] = value;
+					return true;
+				},
+			}
+		);
+	}
+
+	active() {
+		if (!this.sandboxRunning) {
+			this.currentUpdatedPropsValueMap.forEach((value, prop) => {
+				window[prop] = value;
+			});
+		}
+		this.sandboxRunning = true;
+	}
+
+	inactive() {
+		// 要是某个属性微应用在激活的时候新增了，但是在失活后，主应用又新增了同名属性，下次微应用在激活和失活后，该属性不就被删除了吗？
+		// 所以是否需要在激活的时候去遍历 addedPropsSetInSandbox 确认其中的属性是否 window 都没有呢？
+		this.addedPropsSetInSandbox.forEach(prop => {
+			delete window[prop];
+		});
+
+		this.modifiedPropsOriginalValueMapInSandbox.forEach((value, prop) => {
+			window[prop] = value;
+		});
+
+		this.sandboxRunning = false;
+	}
+}
+
+// 严格模式
+
+class ProxySandbox {
+	constructor() {
+		this.sandboxRunning = true;
+		const handler = {
+			get: (target, prop) => {
+				return prop in target ? target[prop] : window[prop];
+			},
+			set: (target, prop, value) => {
+				if (this.sandboxRunning) {
+					if (!target.hasOwnProperty(prop) && window.hasOwnProperty(prop)) {
+						// 与 widnow 对象的属性 descriptor 保持一致
+						const descriptor = Object.getOwnPropertyDescriptor(window);
+						Object.defineProperty(target, prop, {
+							value,
+							enumerable: descriptor.enumerable,
+							configurable: descriptor.configurable,
+							writable: descriptor.writable,
+						});
+					} else {
+						target[prop] = value;
+					}
+				}
+				return true;
+			},
+		};
+		this.proxy = new Proxy({}, handler);
+	}
+	active() {
+		this.sandboxRunning = true;
+	}
+	inactive() {
+		this.sandboxRunning = false;
+	}
+}
+```
+
 ## vs single-spa
 
-| 框架       | entry      | 样式隔离                                        | js 隔离                            |
-| ---------- | ---------- | ----------------------------------------------- | ---------------------------------- |
+| 框架       | entry      | 样式隔离                                            | js 隔离                                |
+| ---------- | ---------- | --------------------------------------------------- | -------------------------------------- |
 | qiankun    | html entry | 支持<br /> · Dynamic Stylesheet <br /> · Shadow Dom | 支持 <br /> · 快照 <br /> · Proxy 代理 |
-| single-spa | js entry   | 不支持                                          | 不支持                             |
+| single-spa | js entry   | 不支持                                              | 不支持                                 |

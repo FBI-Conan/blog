@@ -53,7 +53,7 @@ setup(props, context) {
 |     `mounted`     |     `onMounted`     |                                    |
 |  `beforeUpdate`   |  `onBeforeUpdate`   |                                    |
 |     `updated`     |     `onUpdated`     |                                    |
-|  `beforeunMount`  |  `onBeforeUnmount`  |                                    |
+|  `beforeUnmount`  |  `onBeforeUnmount`  |                                    |
 |    `unMounted`    |    `onUnmounted`    |                                    |
 |  `errorCaptured`  |  `onErrorCaptured`  |       捕获来自后代组件的错误       |
 |  `renderTracked`  |  `onRenderTracked`  |    跟踪虚拟 DOM 重新渲染时调用     |

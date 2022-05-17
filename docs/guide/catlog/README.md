@@ -11,12 +11,26 @@
 
 - [vue](/studySituation/vue/)
 
-> 单元测试
+> web 开发技术
+
+- [微前端](/studySituation/microFrontends/)
 
 - [jest](/studySituation/codeTest/jest/firstLook.html)
+
+- [canvas](/studySituation/webDevelopTech/canvas/)
+
+- [web api](/studySituation/webDevelopTech/webApi/)
 
 ## 后端
 
 > 环境
 
 - [Node.js](/studySituation/backEnd/nodejs/)
+
+> 数据库
+
+- [MySql](/studySituation/backEnd/mySQL/)
+
+> 其他
+
+- [认证](/studySituation/backEnd/authentication/)
