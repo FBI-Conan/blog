@@ -1,6 +1,7 @@
 const { searchPlugin } = require("@vuepress/plugin-search");
 import { defaultTheme } from "@vuepress/theme-default";
 import { defineUserConfig } from "@vuepress/cli";
+import { viteBundler } from "@vuepress/bundler-vite";
 
 module.exports = defineUserConfig({
 	title: "个人博客",
@@ -175,4 +176,14 @@ module.exports = defineUserConfig({
 		editLink: false,
 	}),
 	plugins: [[searchPlugin({})]],
+	bundler: viteBundler({
+		vuePluginOptions: {
+			template: {
+				// 解决 vuepress 将 font 和 center 等非标准的 HTML 标签解析为 Vue 组件的问题
+				compilerOptions: {
+					isCustomElement: tag => ["center", "font"].includes(tag),
+				},
+			},
+		},
+	}),
 });

@@ -11,7 +11,7 @@ vue2.x 中利用选项式 api 进行开发，存在一个较为明显的问题�
 在 setup 中，你可以根据逻辑来组织代码，可以将一个逻辑的代码写在一块，整体感会更好，也利于之后抽取相应的逻辑代码进行复用。
 
 <u>[引用掘金社区上分享的一张动图可以很好的说明组合式 api 的作用](https://juejin.cn/post/6890545920883032071)</u>。
-![组合式api与选项式api的对比](/assets/img/compositionApi.awebp)
+![组合式api与选项式api的对比](/assets/img/compositionApi.webp)
 
 ## 组合式 api 介绍
 
