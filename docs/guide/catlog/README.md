@@ -21,6 +21,10 @@
 
 - [web api](/studySituation/webDevelopTech/webApi/)
 
+> 打包构建
+
+- [webpack](/studySituation/build/webpack/concepts.md)
+
 ## 后端
 
 > 环境

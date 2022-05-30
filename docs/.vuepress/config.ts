@@ -1,14 +1,18 @@
-module.exports = {
+const { searchPlugin } = require("@vuepress/plugin-search");
+import { defaultTheme } from "@vuepress/theme-default";
+import { defineUserConfig } from "@vuepress/cli";
+
+module.exports = defineUserConfig({
 	title: "个人博客",
 	description: "前湖小仙的个人博客",
-	port: "7777",
+	port: 7777,
 	host: "localhost",
 	markdown: {
 		code: {
 			lineNumbers: true,
 		},
 	},
-	themeConfig: {
+	theme: defaultTheme({
 		logo: "/assets/img/headphoto.png",
 		logoDark: "/assets/img/headphoto.png", // 夜间模式下使用的logo
 		navbar: [
@@ -40,6 +44,10 @@ module.exports = {
 					{
 						text: "web开发技术",
 						link: "/studySituation/webDevelopTech/webComponent/",
+					},
+					{
+						text: "打包构建",
+						link: "/studySituation/build/webpack/concepts.md",
 					},
 				],
 			},
@@ -129,6 +137,7 @@ module.exports = {
 			"/studySituation/webDevelopTech": [
 				{
 					text: "web component",
+					collapsible: true,
 					children: [
 						"/studySituation/webDevelopTech/webComponent/",
 						"/studySituation/webDevelopTech/webComponent/customElements.md",
@@ -138,6 +147,7 @@ module.exports = {
 				},
 				{
 					text: "canvas",
+					collapsible: true,
 					children: [
 						"/studySituation/webDevelopTech/canvas/",
 						"/studySituation/webDevelopTech/canvas/example.md",
@@ -145,14 +155,24 @@ module.exports = {
 				},
 				{
 					text: "web Api",
+					collapsible: true,
+					children: ["/studySituation/webDevelopTech/webApi/"],
+				},
+			],
+			"/studySituation/build": [
+				{
+					text: "webpack",
+					collapsible: true,
 					children: [
-						"/studySituation/webDevelopTech/webApi/"
-					]
-				}
+						"/studySituation/build/webpack/concepts.md",
+						"/studySituation/build/webpack/loader.md",
+						"/studySituation/build/webpack/plugin.md",
+					],
+				},
 			],
 		},
 		sidebarDepth: 2,
 		editLink: false,
-	},
-	plugins: [["@vuepress/plugin-search"]],
-};
+	}),
+	plugins: [[searchPlugin({})]],
+});
