@@ -151,7 +151,7 @@ module.exports = class CleanWebpackPlugin {
 };
 ```
 
-## inline-chunk-webpack-chunk
+## inline-chunk-webpack-plugin
 
 将 runtime 文件内容直接作为 html 文件的内联 script
 

@@ -128,7 +128,7 @@ type FF = Return<F>;
 
 ### 分布特性
 
-条件类型使用泛型的形式时，若泛型是联合类型，则会产生分布特性：
+条件类型搭配***泛型***执行时，若泛型是联合类型，则会产生分布特性（且泛型位于 extends 左侧）：
 
 ```ts
 type ToArray<T> = T extends unknown ? T[] : never;

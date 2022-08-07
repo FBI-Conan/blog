@@ -38,21 +38,21 @@ $ yarn add qiankun
 
 ```js
 // main.js
-import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./router";
-import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
-import { registerMicroApps, start } from "qiankun";
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
+import { registerMicroApps, start } from 'qiankun';
 
-createApp(App).use(router).use(ElementPlus).mount("#app");
+createApp(App).use(router).use(ElementPlus).mount('#app');
 
 registerMicroApps([
 	{
-		name: "vue app",
-		entry: "http://localhost:8087", // 微应用的地址 （html entry，不同于 single-spa 的 js entry，需要微应用支持跨域）
-		container: "#vue", // 微应用在主应用中的容器
-		activeRule: "/vue", // 激活规则
+		name: 'vue app',
+		entry: 'http://localhost:8087', // 微应用的地址 （html entry，不同于 single-spa 的 js entry，需要微应用支持跨域）
+		container: '#vue', // 微应用在主应用中的容器
+		activeRule: '/vue', // 激活规则
 	},
 ]);
 
@@ -91,15 +91,15 @@ start();
 
 ```js
 // main.js
-import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./router";
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
 
 let app;
 
 function render(container) {
 	app = createApp(App);
-	app.use(router).mount(container ? container.querySelector("#app") : "#app");
+	app.use(router).mount(container ? container.querySelector('#app') : '#app');
 }
 
 // 全局变量 __POWERED_BY_QIANKUN__ 可用来区分当前是否运行在 qiankun 的主应用的上下文中
@@ -147,19 +147,19 @@ export default router;
 
 ```js
 // vue.config.js
-const packageName = require("./package.json").name;
+const packageName = require('./package.json').name;
 
 module.exports = {
 	devServer: {
 		port: 8087,
 		headers: {
-			"Access-Control-Allow-Origin": "*",
+			'Access-Control-Allow-Origin': '*',
 		}, // 允许跨域
 	},
 	configureWebpack: {
 		output: {
 			library: `${packageName.name}-[name]`,
-			libraryTarget: "umd",
+			libraryTarget: 'umd',
 			jsonpFunction: `webpackJsonp_${packageName}`,
 		},
 	},
@@ -320,3 +320,50 @@ class ProxySandbox {
 | ---------- | ---------- | --------------------------------------------------- | -------------------------------------- |
 | qiankun    | html entry | 支持<br /> · Dynamic Stylesheet <br /> · Shadow Dom | 支持 <br /> · 快照 <br /> · Proxy 代理 |
 | single-spa | js entry   | 不支持                                              | 不支持                                 |
+
+## 常见问题
+
+### 主应用与子应用样式隔离
+
+1.  `{sandbox : { strictStyleIsolation: true }}` 为微应用容器包裹 shadow dom 节点，由于子应用的样式作用域仅在 shadow 元素下，那么一旦子应用中出现运行时越界跑到外面构建 DOM 的场景，必定会导致构建出来的 DOM 无法应用子应用的样式的情况。
+
+2.  `{sandbox : { experimentalStyleIsolation: true }}` 开启运行时的 scoped css 功能，从而解决应用间的样式隔离问题。但是同样存在不能应用子应用中插入到 body 的元素样式。
+
+3.  主应用与子应用在使用第三方库的时候(如 element plus)，更改 element plus 的类名前缀(默认是 el)
+
+> 设置 ElConfigProvider
+
+```vue
+<!-- https://element-plus.gitee.io/zh-CN/guide/namespace.html -->
+<!-- App.vue -->
+<template>
+	<el-config-provider namespace="ep">
+		<!-- ... -->
+	</el-config-provider>
+</template>
+```
+
+> 设置 SCSS 和 CSS 变量
+
+```js
+// vue.config.js
+import { defineConfig } from 'vite';
+export default defineConfig({
+	// ...
+	css: {
+		loaderOptions: {
+			scss: {
+				prependData: `@use "@/styles/element/index.scss" as *;`,
+			},
+		},
+	},
+	// ...
+});
+```
+
+> 引用 element plus scss 样式文件
+
+```ts
+// main.ts
+import 'element-plus/theme-chalk/src/index.scss'
+```
