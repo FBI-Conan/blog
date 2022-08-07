@@ -19,7 +19,7 @@ export interface RequestConfig extends AxiosRequestConfig {
 }
 
 export interface Response<T> {
-	code: '000000' | '000001';
+	code: number;
 	data: T;
 	message: string;
 }

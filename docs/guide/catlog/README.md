@@ -15,15 +15,11 @@
 
 - [微前端](/studySituation/microFrontends/)
 
-- [jest](/studySituation/codeTest/jest/firstLook.html)
-
 - [canvas](/studySituation/webDevelopTech/canvas/)
 
 - [web api](/studySituation/webDevelopTech/webApi/)
 
-> 打包构建
-
-- [webpack](/studySituation/build/webpack/concepts.md)
+- [axios](/studySituation/webDevelopTech/axios/)
 
 ## 后端
 
@@ -38,3 +34,17 @@
 > 其他
 
 - [认证](/studySituation/backEnd/authentication/)
+
+## 工具
+
+> 测试
+
+- [jest](/studySituation/codeTest/jest/firstLook.html)
+
+> 打包构建
+
+- [webpack](/studySituation/build/webpack/concepts.md)
+
+- [esbuild](/studySituation/build/esbuild/start.md)
+
+- [vite](/studySituation/build/vite/introduction.md)

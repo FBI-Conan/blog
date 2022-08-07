@@ -46,10 +46,6 @@ module.exports = defineUserConfig({
 						text: 'web开发技术',
 						link: '/studySituation/webDevelopTech/webComponent/',
 					},
-					{
-						text: '打包构建',
-						link: '/studySituation/build/webpack/concepts.md',
-					},
 				],
 			},
 			{
@@ -62,7 +58,13 @@ module.exports = defineUserConfig({
 			},
 			{
 				text: '工具',
-				children: [{ text: '测试', link: '/studySituation/codeTest/' }],
+				children: [
+					{ text: '测试', link: '/studySituation/codeTest/' },
+					{
+						text: '打包构建',
+						link: '/studySituation/build/webpack/concepts.md',
+					},
+				],
 			},
 			{
 				text: '小游戏',
