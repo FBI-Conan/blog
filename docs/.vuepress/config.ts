@@ -1,7 +1,8 @@
 const { searchPlugin } = require('@vuepress/plugin-search');
-import { defaultTheme } from '@vuepress/theme-default';
-import { defineUserConfig } from '@vuepress/cli';
+import { defineUserConfig, defaultTheme } from 'vuepress';
 import { viteBundler } from '@vuepress/bundler-vite';
+import { registerComponentsPlugin } from '@vuepress/plugin-register-components';
+import path from 'path';
 
 module.exports = defineUserConfig({
 	title: '个人博客',
@@ -32,6 +33,10 @@ module.exports = defineUserConfig({
 						text: 'JavaScript',
 						link: '/studySituation/js/',
 					},
+					{
+						text: 'Css',
+						link: '/studySituation/css/layout/flex.md'
+					}
 				],
 			},
 			{
@@ -191,11 +196,27 @@ module.exports = defineUserConfig({
 					children: ['/studySituation/build/vite/introduction.md'],
 				},
 			],
+			'/studySituation/css': [
+				{
+					text: 'css 布局',
+					collapsible: true,
+					children: [
+						'/studySituation/css/layout/flex.md',
+					],
+				},
+			],
 		},
 		sidebarDepth: 2,
 		editLink: false,
 	}),
-	plugins: [[searchPlugin({})]],
+	plugins: [
+		[searchPlugin({})],
+		[
+			registerComponentsPlugin({
+				componentsDir: path.resolve(__dirname, 'components'), // 注册 Vue 组件
+			}),
+		],
+	],
 	bundler: viteBundler({
 		vuePluginOptions: {
 			template: {
